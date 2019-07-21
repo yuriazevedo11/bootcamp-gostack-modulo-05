@@ -12,6 +12,7 @@ export default class Main extends Component {
     newRepo: '',
     repositories: [],
     loading: false,
+    error: false,
   };
 
   componentDidMount() {
@@ -31,7 +32,7 @@ export default class Main extends Component {
   }
 
   handleInputChange = e => {
-    this.setState({ newRepo: e.target.value });
+    this.setState({ newRepo: e.target.value, error: false });
   };
 
   handleSubmit = async e => {
@@ -40,21 +41,38 @@ export default class Main extends Component {
 
     this.setState({ loading: true });
 
-    const response = await api.get(`repos/${newRepo}`);
+    try {
+      if (!newRepo) {
+        throw new Error('Preencha o campo de busca');
+      }
 
-    const data = {
-      name: response.data.full_name,
-    };
+      const repoExists = repositories.find(
+        repository => repository.name === newRepo
+      );
 
-    this.setState({
-      newRepo: '',
-      loading: false,
-      repositories: [...repositories, data],
-    });
+      if (repoExists) {
+        throw new Error('Repositório duplicado');
+      }
+
+      const response = await api.get(`repos/${newRepo}`);
+
+      const data = {
+        name: response.data.full_name,
+      };
+
+      this.setState({
+        newRepo: '',
+        repositories: [...repositories, data],
+      });
+    } catch (err) {
+      this.setState({ error: true });
+    } finally {
+      this.setState({ loading: false });
+    }
   };
 
   render() {
-    const { newRepo, repositories, loading } = this.state;
+    const { newRepo, repositories, loading, error } = this.state;
 
     return (
       <Container>
@@ -63,7 +81,7 @@ export default class Main extends Component {
           Repositórios
         </h1>
 
-        <Form onSubmit={this.handleSubmit}>
+        <Form onSubmit={this.handleSubmit} error={error}>
           <input
             type="text"
             placeholder="Adicionar repositório"
