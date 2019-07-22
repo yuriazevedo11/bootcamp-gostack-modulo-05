@@ -102,3 +102,45 @@ export const IssueList = styled.ul`
     }
   }
 `;
+
+export const IssueFilter = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+
+  span {
+    margin-right: 5px;
+  }
+
+  select {
+    width: 100px;
+    padding: 3px 6px;
+    border-radius: 4px;
+  }
+`;
+
+export const Pagination = styled.footer`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background: #fff;
+    border: none;
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.1);
+
+    &[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+`;
